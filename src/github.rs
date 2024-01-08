@@ -10,13 +10,18 @@ pub struct Issue {
     pub title: String,
 }
 
-pub fn list_issues(owner: &str, repo: &str) -> Result<Vec<Issue>, Box<dyn Error>> {
-    let url = format!("https://api.github.com/repos/{}/{}/issues", owner, repo);
+fn request(url: String) -> Result<reqwest::blocking::Response, Box<dyn Error>> {
     let client = reqwest::blocking::Client::builder()
         .user_agent("Rust-reqwest-client")
         .build()?;
 
     let response = client.get(url).send()?;
+    Ok(response)
+}
+
+pub fn list_issues(owner: &str, repo: &str) -> Result<Vec<Issue>, Box<dyn Error>> {
+    let url = format!("https://api.github.com/repos/{}/{}/issues", owner, repo);
+    let response = request(url)?;
     let issues = response.json::<Vec<Issue>>()?;
 
     Ok(issues)
@@ -27,11 +32,7 @@ pub fn get_issue(owner: &str, repo: &str, issue_number: &u64) -> Result<Issue, B
         "https://api.github.com/repos/{}/{}/issues/{}",
         owner, repo, issue_number
     );
-    let client = reqwest::blocking::Client::builder()
-        .user_agent("Rust-reqwest-client")
-        .build()?;
-
-    let response = client.get(url).send()?;
+    let response = request(url)?;
     let issue = response.json::<Issue>()?;
 
     Ok(issue)
