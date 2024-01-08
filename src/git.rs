@@ -96,3 +96,17 @@ pub fn git_extract_owner_and_repo() -> io::Result<(String, String)> {
 
     Ok((owner.to_string(), repo.to_string()))
 }
+
+pub fn create_and_checkout_branch(branch_name: &str) -> Result<(), Box<dyn Error>> {
+    let repo_path = get_repo_path();
+
+    let repo = Repository::open(repo_path)?;
+    let remote_branch = repo.find_branch("origin/main", BranchType::Remote)?;
+    let target = remote_branch.get().peel_to_commit()?;
+    let new_branch = repo.branch(branch_name, &target, false)?;
+
+    repo.set_head(new_branch.get().name().unwrap())?;
+    repo.checkout_head(Some(git2::build::CheckoutBuilder::new().force()))?;
+
+    Ok(())
+}

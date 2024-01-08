@@ -34,6 +34,8 @@ fn cmd_work(owner: &str, repo: &str, issue_number: &u64) {
     // Limit branch name to 50 characters
     let branch_name = branch_full_name.chars().take(50).collect::<String>();
     println!("The branch name is {}", branch_name);
+
+    git::create_and_checkout_branch(&branch_name).expect("Could not create branch");
 }
 
 fn main() -> io::Result<()> {
