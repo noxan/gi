@@ -1,17 +1,22 @@
+mod cli;
 mod config;
 mod git;
 mod github;
 
+use crate::cli::Cli;
+use crate::git::extract_repo_from_remote_url;
+use clap::Parser;
 use config::read_config;
 use git::git_extract_remotes;
 use github::list_issues;
 use log::debug;
 use std::io;
 
-use crate::git::extract_repo_from_remote_url;
-
 fn main() -> io::Result<()> {
     env_logger::init();
+
+    let args = Cli::parse();
+    debug!("The pattern is {}", args.pattern);
 
     debug!("Hello, world!");
 
