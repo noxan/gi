@@ -9,6 +9,21 @@ use github::list_issues;
 use log::debug;
 use std::io;
 
+fn cmd_list(owner: &str, repo: &str) {
+    let issues = list_issues(owner, repo).expect("Could not list issues");
+
+    for issue in &issues {
+        println!("#{} {}", issue.number, issue.title)
+    }
+}
+
+fn cmd_work(owner: &str, repo: &str, issue_number: &u64) {
+    println!(
+        "Work on issue {} command for {}/{}",
+        issue_number, owner, repo
+    );
+}
+
 fn main() -> io::Result<()> {
     env_logger::init();
 
@@ -26,15 +41,11 @@ fn main() -> io::Result<()> {
 
     let (owner, repo) = git_extract_owner_and_repo().expect("Could not get owner and repo");
 
-    let issues = list_issues(owner.as_str(), repo.as_str()).expect("Could not list issues");
-    debug!(
-        "The issues are \n{}",
-        issues
-            .iter()
-            .map(|issue| format!("- {} (#{})", issue.title, issue.number))
-            .collect::<Vec<String>>()
-            .join("\n")
-    );
+    if issue_number.is_none() {
+        cmd_list(owner.as_str(), repo.as_str());
+    } else {
+        cmd_work(owner.as_str(), repo.as_str(), issue_number.unwrap());
+    }
 
     Ok(())
 }
