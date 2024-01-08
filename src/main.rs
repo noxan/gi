@@ -22,6 +22,9 @@ fn main() -> io::Result<()> {
     let config = toml::from_str::<Config>(&contents).expect("Could not parse config file");
     println!("The config is {:#?}", config);
 
+    let token = config.github.token;
+    println!("The github access token is {}", token);
+
     let current_dir = env::current_dir()?;
     println!("The current directory is {}", current_dir.display());
 
