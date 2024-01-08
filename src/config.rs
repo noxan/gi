@@ -1,4 +1,8 @@
 use serde::Deserialize;
+use std::{
+    fs,
+    io::{self, Read},
+};
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
@@ -8,4 +12,22 @@ pub struct Config {
 #[derive(Debug, Deserialize)]
 pub struct ConfigGithub {
     pub token: String,
+}
+
+pub fn read_config() -> io::Result<Config> {
+    let home_dir = dirs::home_dir().expect("Could not find home directory");
+    println!("The home directory is {}", home_dir.display());
+
+    let config_path = home_dir.join(".config").join("gi.toml");
+    println!("The config path is {}", config_path.display());
+
+    let mut file = fs::File::open(config_path).expect("Could not open config file");
+    // TODO: create config file if it doesn't exist
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)?;
+
+    let config = toml::from_str::<Config>(&contents).expect("Could not parse config file");
+    println!("The config is {:#?}", config);
+
+    Ok(config)
 }
