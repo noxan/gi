@@ -1,11 +1,8 @@
-use clap::{value_parser, Arg, ArgMatches, Command};
+use argh::FromArgs;
 
-pub fn parse() -> ArgMatches {
-    return Command::new("gi")
-        .arg(
-            Arg::new("issue")
-                .value_parser(value_parser!(u64))
-                .required(false),
-        )
-        .get_matches();
+#[derive(FromArgs, PartialEq, Debug)]
+/// An oppinionated Git(hub) workflow tool.
+pub struct Cli {
+    #[argh(positional)]
+    pub issue: Option<u64>,
 }

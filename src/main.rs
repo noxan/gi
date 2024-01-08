@@ -3,6 +3,7 @@ mod config;
 mod git;
 mod github;
 
+use crate::cli::Cli;
 use crate::git::git_extract_owner_and_repo;
 use crate::github::get_issue;
 use config::read_config;
@@ -52,12 +53,12 @@ fn main() -> io::Result<()> {
     let (owner, repo) = git_extract_owner_and_repo().expect("Could not get owner and repo");
 
     // Parse command line arguments
-    let matches = cli::parse();
-    let issue_number = matches.get_one::<u64>("issue");
+    let cli: Cli = argh::from_env();
+    let issue_number = cli.issue;
     debug!("The issue is {:?}", issue_number);
 
     match issue_number {
-        Some(issue_number) => cmd_work(access_token, owner.as_str(), repo.as_str(), issue_number),
+        Some(issue_number) => cmd_work(access_token, owner.as_str(), repo.as_str(), &issue_number),
         None => cmd_list(access_token, owner.as_str(), repo.as_str()),
     }
 
