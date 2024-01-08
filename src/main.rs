@@ -16,6 +16,12 @@ fn main() -> io::Result<()> {
 
     debug!("Hello, world!");
 
+    // Read config file
+    let config = read_config().expect("Could not read config");
+    let token = config.github.token;
+    debug!("The github access token is {}", token);
+
+    // Parse command line arguments
     let matches = Command::new("gi")
         .arg(
             Arg::new("issue")
@@ -25,10 +31,6 @@ fn main() -> io::Result<()> {
         .get_matches();
     let issue_number = matches.get_one::<u64>("issue");
     debug!("The issue is {:?}", issue_number);
-
-    let config = read_config().expect("Could not read config");
-    let token = config.github.token;
-    debug!("The github access token is {}", token);
 
     let git_remotes = git_extract_remotes()?;
     debug!(
