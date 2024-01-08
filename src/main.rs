@@ -32,7 +32,7 @@ fn main() -> io::Result<()> {
         "The issues are \n{}",
         issues
             .iter()
-            .map(|issue| format!("- {}", issue.title))
+            .map(|issue| format!("- {} (#{})", issue.title, issue.number))
             .collect::<Vec<String>>()
             .join("\n")
     );

@@ -2,8 +2,11 @@ use reqwest;
 use serde::Deserialize;
 use std::error::Error;
 
+// https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#list-repository-issues
 #[derive(Deserialize, Debug)]
 pub struct Issue {
+    pub id: u64,
+    pub number: u64,
     pub title: String,
 }
 
