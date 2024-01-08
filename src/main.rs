@@ -13,6 +13,7 @@ fn main() -> io::Result<()> {
     println!("The config path is {}", config_path.display());
 
     let mut file = fs::File::open(config_path).expect("Could not open config file");
+    // TODO: create config file if it doesn't exist
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
     println!("The config file contains:\n{}", contents);
