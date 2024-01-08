@@ -60,3 +60,31 @@ pub fn extract_repo_from_remote_url(remote_url: &str) -> Option<(&str, &str)> {
 
     None
 }
+
+pub fn git_extract_owner_and_repo() -> io::Result<(String, String)> {
+    let git_remotes = git_extract_remotes()?;
+    debug!(
+        "The git remotes are {}",
+        git_remotes
+            .iter()
+            .map(|(name, url)| format!("{} {}", name, url))
+            .collect::<Vec<String>>()
+            .join(", ")
+    );
+
+    let remote = match git_remotes.get("origin") {
+        Some(url) => url.to_string(),
+        None => git_remotes
+            .values()
+            .next()
+            .expect("Could not get remote url")
+            .to_string(),
+    };
+    debug!("The remote is {}", remote);
+
+    let (owner, repo) = extract_repo_from_remote_url(&remote)
+        .expect("Could not extract owner and repo from remote url");
+    debug!("The owner is {} and the repo is {}", owner, repo);
+
+    Ok((owner.to_string(), repo.to_string()))
+}

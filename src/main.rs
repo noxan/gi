@@ -3,10 +3,9 @@ mod config;
 mod git;
 mod github;
 
-use crate::git::extract_repo_from_remote_url;
+use crate::git::git_extract_owner_and_repo;
 use clap::{value_parser, Arg, Command};
 use config::read_config;
-use git::git_extract_remotes;
 use github::list_issues;
 use log::debug;
 use std::io;
@@ -32,31 +31,9 @@ fn main() -> io::Result<()> {
     let issue_number = matches.get_one::<u64>("issue");
     debug!("The issue is {:?}", issue_number);
 
-    let git_remotes = git_extract_remotes()?;
-    debug!(
-        "The git remotes are {}",
-        git_remotes
-            .iter()
-            .map(|(name, url)| format!("{} {}", name, url))
-            .collect::<Vec<String>>()
-            .join(", ")
-    );
+    let (owner, repo) = git_extract_owner_and_repo().expect("Could not get owner and repo");
 
-    let remote = match git_remotes.get("origin") {
-        Some(url) => url.to_string(),
-        None => git_remotes
-            .values()
-            .next()
-            .expect("Could not get remote url")
-            .to_string(),
-    };
-    debug!("The remote is {}", remote);
-
-    let (owner, repo) = extract_repo_from_remote_url(&remote)
-        .expect("Could not extract owner and repo from remote url");
-    debug!("The owner is {} and the repo is {}", owner, repo);
-
-    let issues = list_issues(owner, repo).expect("Could not list issues");
+    let issues = list_issues(owner.as_str(), repo.as_str()).expect("Could not list issues");
     debug!(
         "The issues are \n{}",
         issues
