@@ -21,7 +21,14 @@ fn main() -> io::Result<()> {
     debug!("The git remotes are {:?}", git_remotes);
 
     let issues = list_issues("rust-lang/rust").expect("Could not list issues");
-    debug!("The issues are {:?}", issues);
+    debug!(
+        "The issues are \n{}",
+        issues
+            .iter()
+            .map(|issue| format!("- {}", issue.title))
+            .collect::<Vec<String>>()
+            .join("\n")
+    );
 
     Ok(())
 }
