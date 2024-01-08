@@ -1,8 +1,11 @@
-use clap::Parser;
+use clap::{value_parser, Arg, ArgMatches, Command};
 
-#[derive(Parser)]
-pub struct Cli {
-    pub pattern: String,
-
-    pub path: std::path::PathBuf,
+pub fn parse() -> ArgMatches {
+    return Command::new("gi")
+        .arg(
+            Arg::new("issue")
+                .value_parser(value_parser!(u64))
+                .required(false),
+        )
+        .get_matches();
 }

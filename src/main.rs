@@ -4,7 +4,6 @@ mod git;
 mod github;
 
 use crate::git::git_extract_owner_and_repo;
-use clap::{value_parser, Arg, Command};
 use config::read_config;
 use github::list_issues;
 use log::debug;
@@ -21,13 +20,7 @@ fn main() -> io::Result<()> {
     debug!("The github access token is {}", token);
 
     // Parse command line arguments
-    let matches = Command::new("gi")
-        .arg(
-            Arg::new("issue")
-                .value_parser(value_parser!(u64))
-                .required(false),
-        )
-        .get_matches();
+    let matches = cli::parse();
     let issue_number = matches.get_one::<u64>("issue");
     debug!("The issue is {:?}", issue_number);
 
