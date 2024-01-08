@@ -12,7 +12,7 @@ fn main() -> io::Result<()> {
     let config_path = home_dir.join(".config").join("gi.toml");
     println!("The config path is {}", config_path.display());
 
-    let mut file = fs::File::open(config_path)?;
+    let mut file = fs::File::open(config_path).expect("Could not open config file");
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
     println!("The config file contains:\n{}", contents);
