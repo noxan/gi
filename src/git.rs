@@ -1,12 +1,20 @@
 use configparser::ini::Ini;
+use git2::{BranchType, Repository};
 use log::debug;
+use std::error::Error;
 use std::{collections::HashMap, env, fs, io, path::PathBuf};
 
-fn git_config_path() -> io::Result<PathBuf> {
-    let current_dir = env::current_dir()?;
+fn get_repo_path() -> PathBuf {
+    let current_dir = env::current_dir().expect("Could not get current directory");
     debug!("The current directory is {}", current_dir.display());
 
-    let git_config_path = current_dir.join(".git").join("config");
+    current_dir
+}
+
+fn git_config_path() -> io::Result<PathBuf> {
+    let repo_path = get_repo_path();
+
+    let git_config_path = repo_path.join(".git").join("config");
     debug!("The git config path is {}", git_config_path.display());
 
     Ok(git_config_path)
