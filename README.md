@@ -5,8 +5,15 @@ An oppinionated Git(hub) productivity command line interface (CLI).
 ## Usage
 
 ```
-gi - list all issues
-gi <issue_number> - create branch to work on issue <issue_number>
+Usage: gi [<issue>]
+
+An oppinionated Git(hub) workflow tool.
+
+Positional Arguments:
+  issue
+
+Options:
+  --help            display usage information
 ```
 
 ## Configuration
