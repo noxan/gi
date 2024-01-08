@@ -3,6 +3,9 @@ use reqwest::header;
 use serde::Deserialize;
 use std::error::Error;
 
+// Authentication
+// https://docs.github.com/en/rest/authentication/authenticating-to-the-rest-api?apiVersion=2022-11-28
+
 // https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#list-repository-issues
 #[derive(Deserialize, Debug)]
 pub struct Issue {
