@@ -12,7 +12,7 @@ fn git_config_path() -> io::Result<PathBuf> {
     Ok(git_config_path)
 }
 
-pub fn git_extract_remotes() -> io::Result<()> {
+pub fn git_extract_remotes() -> io::Result<Vec<String>> {
     let git_config_path = git_config_path().expect("Could not get git config path");
 
     let mut git_config = Ini::new();
@@ -34,5 +34,5 @@ pub fn git_extract_remotes() -> io::Result<()> {
 
     debug!("The remotes are {:?}", remotes);
 
-    Ok(())
+    Ok(remotes)
 }
