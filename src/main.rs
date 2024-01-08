@@ -1,7 +1,18 @@
+use serde::Deserialize;
 use std::{
     env, fs,
     io::{self, Read},
 };
+
+#[derive(Debug, Deserialize)]
+struct Config {
+    github: ConfigGithub,
+}
+
+#[derive(Debug, Deserialize)]
+struct ConfigGithub {
+    token: String,
+}
 
 fn main() -> io::Result<()> {
     println!("Hello, world!");
@@ -16,7 +27,9 @@ fn main() -> io::Result<()> {
     // TODO: create config file if it doesn't exist
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
-    println!("The config file contains:\n{}", contents);
+
+    let config = toml::from_str::<Config>(&contents).expect("Could not parse config file");
+    println!("The config is {:#?}", config);
 
     let current_dir = env::current_dir()?;
     println!("The current directory is {}", current_dir.display());
