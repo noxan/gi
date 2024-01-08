@@ -25,5 +25,14 @@ pub fn git_extract_remotes() -> io::Result<()> {
     let sections = git_config.sections();
     debug!("The sections are {:?}", sections);
 
+    let remotes = git_config
+        .sections()
+        .iter()
+        .filter(|section| section.starts_with("remote "))
+        .map(|section| section.trim_start_matches("remote ").to_string())
+        .collect::<Vec<String>>();
+
+    debug!("The remotes are {:?}", remotes);
+
     Ok(())
 }
