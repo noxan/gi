@@ -1,4 +1,7 @@
-use std::{env, io};
+use std::{
+    env, fs,
+    io::{self, Read},
+};
 
 fn main() -> io::Result<()> {
     println!("Hello, world!");
@@ -8,6 +11,11 @@ fn main() -> io::Result<()> {
 
     let config_path = home_dir.join(".config").join("gi.toml");
     println!("The config path is {}", config_path.display());
+
+    let mut file = fs::File::open(config_path)?;
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)?;
+    println!("The config file contains:\n{}", contents);
 
     let current_dir = env::current_dir()?;
     println!("The current directory is {}", current_dir.display());
