@@ -10,8 +10,8 @@ pub struct Issue {
     pub title: String,
 }
 
-pub fn list_issues(repo: &str) -> Result<Vec<Issue>, Box<dyn Error>> {
-    let url = format!("https://api.github.com/repos/{}/issues", repo);
+pub fn list_issues(owner: &str, repo: &str) -> Result<Vec<Issue>, Box<dyn Error>> {
+    let url = format!("https://api.github.com/repos/{}/{}/issues", owner, repo);
     let client = reqwest::blocking::Client::builder()
         .user_agent("Rust-reqwest-client")
         .build()?;
