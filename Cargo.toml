@@ -7,6 +7,6 @@ edition = "2021"
 
 [dependencies]
 dirs = "5.0.1"
-serde = "1.0.195"
+serde = { version = "1.0.195", features = ["derive"] }
 slug = "0.1.5"
 toml = "0.8.8"
