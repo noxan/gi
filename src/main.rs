@@ -18,7 +18,14 @@ fn main() -> io::Result<()> {
     debug!("The github access token is {}", token);
 
     let git_remotes = git_extract_remotes()?;
-    debug!("The git remotes are {:?}", git_remotes);
+    debug!(
+        "The git remotes are {}",
+        git_remotes
+            .iter()
+            .map(|(name, url)| format!("{} {}", name, url))
+            .collect::<Vec<String>>()
+            .join(", ")
+    );
 
     let issues = list_issues("rust-lang/rust").expect("Could not list issues");
     debug!(

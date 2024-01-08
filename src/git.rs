@@ -1,6 +1,6 @@
 use configparser::ini::Ini;
 use log::debug;
-use std::{env, fs, io, path::PathBuf};
+use std::{collections::HashMap, env, fs, io, path::PathBuf};
 
 fn git_config_path() -> io::Result<PathBuf> {
     let current_dir = env::current_dir()?;
@@ -12,7 +12,7 @@ fn git_config_path() -> io::Result<PathBuf> {
     Ok(git_config_path)
 }
 
-pub fn git_extract_remotes() -> io::Result<Vec<String>> {
+pub fn git_extract_remotes() -> io::Result<HashMap<String, String>> {
     let git_config_path = git_config_path().expect("Could not get git config path");
 
     let mut git_config = Ini::new();
@@ -22,25 +22,24 @@ pub fn git_extract_remotes() -> io::Result<Vec<String>> {
         .read(contents)
         .expect("Could not parse git config");
 
+    let mut remotes = HashMap::new();
+
     let sections = git_config.sections();
     debug!("The sections are [{}]", sections.join(", "));
 
-    let remote_sections = git_config
-        .sections()
-        .iter()
-        .filter(|section| section.starts_with("remote "))
-        .map(|section| section.to_string())
-        .collect::<Vec<String>>();
-    debug!("The remote sections are [{}]", remote_sections.join(", "));
+    for section in sections {
+        if section.starts_with("remote ") {
+            let remote_name = section.trim_start_matches("remote ").replace("\"", "");
+            debug!("The remote name is {}", remote_name);
 
-    let remotes = git_config
-        .sections()
-        .iter()
-        .filter(|section| section.starts_with("remote "))
-        .map(|section| section.trim_start_matches("remote ").to_string())
-        .collect::<Vec<String>>();
+            let remote_url = git_config
+                .get(&section, "url")
+                .expect("Could not get remote url");
+            debug!("The remote url is {}", remote_url);
 
-    debug!("The remotes are [{}]", remotes.join(", "));
+            remotes.insert(remote_name.to_string(), remote_url.to_string());
+        }
+    }
 
     Ok(remotes)
 }
