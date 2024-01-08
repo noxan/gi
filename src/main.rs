@@ -43,7 +43,7 @@ fn main() -> io::Result<()> {
         .expect("Could not extract owner and repo from remote url");
     debug!("The owner is {} and the repo is {}", owner, repo);
 
-    let issues = list_issues("rust-lang", "rust").expect("Could not list issues");
+    let issues = list_issues(owner, repo).expect("Could not list issues");
     debug!(
         "The issues are \n{}",
         issues
