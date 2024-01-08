@@ -23,8 +23,8 @@ fn main() -> io::Result<()> {
                 .required(false),
         )
         .get_matches();
-    let issue = matches.get_one::<u64>("issue");
-    debug!("The issue is {:?}", issue);
+    let issue_number = matches.get_one::<u64>("issue");
+    debug!("The issue is {:?}", issue_number);
 
     let config = read_config().expect("Could not read config");
     let token = config.github.token;
