@@ -11,21 +11,21 @@ use log::debug;
 use slug::slugify;
 use std::io;
 
-fn cmd_list(owner: &str, repo: &str) {
-    let issues = list_issues(owner, repo).expect("Could not list issues");
+fn cmd_list(access_token: String, owner: &str, repo: &str) {
+    let issues = list_issues(access_token, owner, repo).expect("Could not list issues");
 
     for issue in &issues {
         println!("#{} {}", issue.number, issue.title)
     }
 }
 
-fn cmd_work(owner: &str, repo: &str, issue_number: &u64) {
+fn cmd_work(access_token: String, owner: &str, repo: &str, issue_number: &u64) {
     debug!(
         "Work on issue {} command for {}/{}",
         issue_number, owner, repo
     );
 
-    let issue = get_issue(owner, repo, issue_number).expect("Could not get issue");
+    let issue = get_issue(access_token, owner, repo, issue_number).expect("Could not get issue");
     debug!("The issue is {:?}", issue);
 
     let title_slug = slugify(issue.title);
@@ -45,8 +45,8 @@ fn main() -> io::Result<()> {
 
     // Read config file
     let config = read_config().expect("Could not read config");
-    let token = config.github.token;
-    debug!("The github access token is {}", token);
+    let access_token = config.github.token;
+    debug!("The github access token is {}", access_token);
 
     // Retrieve project info
     let (owner, repo) = git_extract_owner_and_repo().expect("Could not get owner and repo");
@@ -57,8 +57,8 @@ fn main() -> io::Result<()> {
     debug!("The issue is {:?}", issue_number);
 
     match issue_number {
-        Some(issue_number) => cmd_work(owner.as_str(), repo.as_str(), issue_number),
-        None => cmd_list(owner.as_str(), repo.as_str()),
+        Some(issue_number) => cmd_work(access_token, owner.as_str(), repo.as_str(), issue_number),
+        None => cmd_list(access_token, owner.as_str(), repo.as_str()),
     }
 
     Ok(())

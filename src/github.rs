@@ -1,4 +1,5 @@
 use reqwest;
+use reqwest::header;
 use serde::Deserialize;
 use std::error::Error;
 
@@ -10,29 +11,48 @@ pub struct Issue {
     pub title: String,
 }
 
-fn request(url: String) -> Result<reqwest::blocking::Response, Box<dyn Error>> {
+fn request(
+    access_token: String,
+    url: String,
+) -> Result<reqwest::blocking::Response, Box<dyn Error>> {
+    let mut headers = header::HeaderMap::new();
+    headers.insert(
+        reqwest::header::AUTHORIZATION,
+        header::HeaderValue::from_str(format!("token {}", access_token).as_str())?,
+    );
+
     let client = reqwest::blocking::Client::builder()
         .user_agent("Rust-reqwest-client")
+        .default_headers(headers)
         .build()?;
 
     let response = client.get(url).send()?;
     Ok(response)
 }
 
-pub fn list_issues(owner: &str, repo: &str) -> Result<Vec<Issue>, Box<dyn Error>> {
+pub fn list_issues(
+    access_token: String,
+    owner: &str,
+    repo: &str,
+) -> Result<Vec<Issue>, Box<dyn Error>> {
     let url = format!("https://api.github.com/repos/{}/{}/issues", owner, repo);
-    let response = request(url)?;
+    let response = request(access_token, url)?;
     let issues = response.json::<Vec<Issue>>()?;
 
     Ok(issues)
 }
 
-pub fn get_issue(owner: &str, repo: &str, issue_number: &u64) -> Result<Issue, Box<dyn Error>> {
+pub fn get_issue(
+    access_token: String,
+    owner: &str,
+    repo: &str,
+    issue_number: &u64,
+) -> Result<Issue, Box<dyn Error>> {
     let url = format!(
         "https://api.github.com/repos/{}/{}/issues/{}",
         owner, repo, issue_number
     );
-    let response = request(url)?;
+    let response = request(access_token, url)?;
     let issue = response.json::<Issue>()?;
 
     Ok(issue)
