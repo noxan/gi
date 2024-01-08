@@ -21,3 +21,18 @@ pub fn list_issues(owner: &str, repo: &str) -> Result<Vec<Issue>, Box<dyn Error>
 
     Ok(issues)
 }
+
+pub fn get_issue(owner: &str, repo: &str, issue_number: &u64) -> Result<Issue, Box<dyn Error>> {
+    let url = format!(
+        "https://api.github.com/repos/{}/{}/issues/{}",
+        owner, repo, issue_number
+    );
+    let client = reqwest::blocking::Client::builder()
+        .user_agent("Rust-reqwest-client")
+        .build()?;
+
+    let response = client.get(url).send()?;
+    let issue = response.json::<Issue>()?;
+
+    Ok(issue)
+}

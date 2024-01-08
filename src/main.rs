@@ -4,6 +4,7 @@ mod git;
 mod github;
 
 use crate::git::git_extract_owner_and_repo;
+use crate::github::get_issue;
 use config::read_config;
 use github::list_issues;
 use log::debug;
@@ -23,6 +24,9 @@ fn cmd_work(owner: &str, repo: &str, issue_number: &u64) {
         "Work on issue {} command for {}/{}",
         issue_number, owner, repo
     );
+
+    let issue = get_issue(owner, repo, issue_number).expect("Could not get issue");
+    println!("The issue is {:?}", issue);
 
     let slug = slugify("Hello world");
     println!("The slug is {}", slug);
