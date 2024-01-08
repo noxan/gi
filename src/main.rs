@@ -8,6 +8,8 @@ use github::list_issues;
 use log::debug;
 use std::io;
 
+use crate::git::extract_repo_from_remote_url;
+
 fn main() -> io::Result<()> {
     env_logger::init();
 
@@ -36,6 +38,10 @@ fn main() -> io::Result<()> {
             .to_string(),
     };
     debug!("The remote is {}", remote);
+
+    let (owner, repo) = extract_repo_from_remote_url(&remote)
+        .expect("Could not extract owner and repo from remote url");
+    debug!("The owner is {} and the repo is {}", owner, repo);
 
     let issues = list_issues("rust-lang/rust").expect("Could not list issues");
     debug!(

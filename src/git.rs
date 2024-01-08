@@ -43,3 +43,20 @@ pub fn git_extract_remotes() -> io::Result<HashMap<String, String>> {
 
     Ok(remotes)
 }
+
+pub fn extract_repo_from_remote_url(remote_url: &str) -> Option<(&str, &str)> {
+    let parts: Vec<&str> = if remote_url.contains("https://") {
+        remote_url.trim_end_matches(".git").split('/').collect()
+    } else {
+        remote_url.trim_end_matches(".git").split(':').collect()
+    };
+
+    if parts.len() >= 2 {
+        let repo_parts = parts.last().unwrap().split('/').collect::<Vec<&str>>();
+        if repo_parts.len() == 2 {
+            return Some((repo_parts[0], repo_parts[1]));
+        }
+    }
+
+    None
+}
