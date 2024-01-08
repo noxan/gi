@@ -3,9 +3,8 @@ mod config;
 mod git;
 mod github;
 
-use crate::cli::Cli;
 use crate::git::extract_repo_from_remote_url;
-use clap::Parser;
+use clap::{value_parser, Arg, Command};
 use config::read_config;
 use git::git_extract_remotes;
 use github::list_issues;
@@ -15,10 +14,17 @@ use std::io;
 fn main() -> io::Result<()> {
     env_logger::init();
 
-    let args = Cli::parse();
-    debug!("The pattern is {}", args.pattern);
-
     debug!("Hello, world!");
+
+    let matches = Command::new("gi")
+        .arg(
+            Arg::new("issue")
+                .value_parser(value_parser!(u64))
+                .required(false),
+        )
+        .get_matches();
+    let issue = matches.get_one::<u64>("issue");
+    debug!("The issue is {:?}", issue);
 
     let config = read_config().expect("Could not read config");
     let token = config.github.token;
