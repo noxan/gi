@@ -7,6 +7,7 @@ use crate::git::git_extract_owner_and_repo;
 use config::read_config;
 use github::list_issues;
 use log::debug;
+use slug::slugify;
 use std::io;
 
 fn cmd_list(owner: &str, repo: &str) {
@@ -22,6 +23,9 @@ fn cmd_work(owner: &str, repo: &str, issue_number: &u64) {
         "Work on issue {} command for {}/{}",
         issue_number, owner, repo
     );
+
+    let slug = slugify("Hello world");
+    println!("The slug is {}", slug);
 }
 
 fn main() -> io::Result<()> {
