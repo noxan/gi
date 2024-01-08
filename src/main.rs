@@ -1,7 +1,10 @@
 mod config;
 mod git;
+mod github;
+
 use config::read_config;
 use git::git_extract_remotes;
+use github::list_issues;
 use log::debug;
 use std::io;
 
@@ -16,6 +19,9 @@ fn main() -> io::Result<()> {
 
     let git_remotes = git_extract_remotes()?;
     debug!("The git remotes are {:?}", git_remotes);
+
+    let issues = list_issues("rust-lang/rust").expect("Could not list issues");
+    debug!("The issues are {:?}", issues);
 
     Ok(())
 }
