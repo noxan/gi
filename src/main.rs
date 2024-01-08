@@ -34,12 +34,13 @@ fn main() -> io::Result<()> {
     let token = config.github.token;
     debug!("The github access token is {}", token);
 
+    // Retrieve project info
+    let (owner, repo) = git_extract_owner_and_repo().expect("Could not get owner and repo");
+
     // Parse command line arguments
     let matches = cli::parse();
     let issue_number = matches.get_one::<u64>("issue");
     debug!("The issue is {:?}", issue_number);
-
-    let (owner, repo) = git_extract_owner_and_repo().expect("Could not get owner and repo");
 
     if issue_number.is_none() {
         cmd_list(owner.as_str(), repo.as_str());
