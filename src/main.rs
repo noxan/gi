@@ -27,6 +27,16 @@ fn main() -> io::Result<()> {
             .join(", ")
     );
 
+    let remote = match git_remotes.get("origin") {
+        Some(url) => url.to_string(),
+        None => git_remotes
+            .values()
+            .next()
+            .expect("Could not get remote url")
+            .to_string(),
+    };
+    debug!("The remote is {}", remote);
+
     let issues = list_issues("rust-lang/rust").expect("Could not list issues");
     debug!(
         "The issues are \n{}",
