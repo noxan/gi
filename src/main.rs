@@ -42,10 +42,9 @@ fn main() -> io::Result<()> {
     let issue_number = matches.get_one::<u64>("issue");
     debug!("The issue is {:?}", issue_number);
 
-    if issue_number.is_none() {
-        cmd_list(owner.as_str(), repo.as_str());
-    } else {
-        cmd_work(owner.as_str(), repo.as_str(), issue_number.unwrap());
+    match issue_number {
+        Some(issue_number) => cmd_work(owner.as_str(), repo.as_str(), issue_number),
+        None => cmd_list(owner.as_str(), repo.as_str()),
     }
 
     Ok(())
