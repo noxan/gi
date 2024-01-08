@@ -1,18 +1,9 @@
-use serde::Deserialize;
 use std::{
     env, fs,
     io::{self, Read},
 };
-
-#[derive(Debug, Deserialize)]
-struct Config {
-    github: ConfigGithub,
-}
-
-#[derive(Debug, Deserialize)]
-struct ConfigGithub {
-    token: String,
-}
+mod config;
+use config::Config;
 
 fn main() -> io::Result<()> {
     println!("Hello, world!");
