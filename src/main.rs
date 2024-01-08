@@ -20,16 +20,20 @@ fn cmd_list(owner: &str, repo: &str) {
 }
 
 fn cmd_work(owner: &str, repo: &str, issue_number: &u64) {
-    println!(
+    debug!(
         "Work on issue {} command for {}/{}",
         issue_number, owner, repo
     );
 
     let issue = get_issue(owner, repo, issue_number).expect("Could not get issue");
-    println!("The issue is {:?}", issue);
+    debug!("The issue is {:?}", issue);
 
-    let slug = slugify("Hello world");
-    println!("The slug is {}", slug);
+    let title_slug = slugify(issue.title);
+    let branch_full_name = format!("{}-{}", issue_number, title_slug);
+
+    // Limit branch name to 50 characters
+    let branch_name = branch_full_name.chars().take(50).collect::<String>();
+    println!("The branch name is {}", branch_name);
 }
 
 fn main() -> io::Result<()> {
