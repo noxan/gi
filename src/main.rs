@@ -4,6 +4,8 @@ use std::{env, io};
 use config::read_config;
 
 fn main() -> io::Result<()> {
+    env_logger::init();
+
     println!("Hello, world!");
 
     let config = read_config().expect("Could not read config");
