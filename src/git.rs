@@ -23,7 +23,7 @@ pub fn git_extract_remotes() -> io::Result<Vec<String>> {
         .expect("Could not parse git config");
 
     let sections = git_config.sections();
-    debug!("The sections are {:?}", sections);
+    debug!("The sections are [{}]", sections.join(", "));
 
     let remotes = git_config
         .sections()
@@ -32,7 +32,7 @@ pub fn git_extract_remotes() -> io::Result<Vec<String>> {
         .map(|section| section.trim_start_matches("remote ").to_string())
         .collect::<Vec<String>>();
 
-    debug!("The remotes are {:?}", remotes);
+    debug!("The remotes are [{}]", remotes.join(", "));
 
     Ok(remotes)
 }
