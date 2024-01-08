@@ -1,19 +1,19 @@
 mod config;
-use std::{env, io};
-
 use config::read_config;
+use log::debug;
+use std::{env, io};
 
 fn main() -> io::Result<()> {
     env_logger::init();
 
-    println!("Hello, world!");
+    debug!("Hello, world!");
 
     let config = read_config().expect("Could not read config");
     let token = config.github.token;
-    println!("The github access token is {}", token);
+    debug!("The github access token is {}", token);
 
     let current_dir = env::current_dir()?;
-    println!("The current directory is {}", current_dir.display());
+    debug!("The current directory is {}", current_dir.display());
 
     Ok(())
 }
