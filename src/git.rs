@@ -25,6 +25,14 @@ pub fn git_extract_remotes() -> io::Result<Vec<String>> {
     let sections = git_config.sections();
     debug!("The sections are [{}]", sections.join(", "));
 
+    let remote_sections = git_config
+        .sections()
+        .iter()
+        .filter(|section| section.starts_with("remote "))
+        .map(|section| section.to_string())
+        .collect::<Vec<String>>();
+    debug!("The remote sections are [{}]", remote_sections.join(", "));
+
     let remotes = git_config
         .sections()
         .iter()
