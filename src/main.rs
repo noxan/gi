@@ -39,6 +39,10 @@ fn cmd_work(access_token: String, owner: &str, repo: &str, issue_number: &u64) {
     git::create_and_checkout_branch(&branch_name).expect("Could not create branch");
 }
 
+fn cmd_pullrequest(access_token: String, owner: &str, repo: &str) {
+    debug!("Pull request command for {}/{}", owner, repo);
+}
+
 fn main() -> io::Result<()> {
     env_logger::init();
 
@@ -59,7 +63,7 @@ fn main() -> io::Result<()> {
     debug!("The issue is {:?}", issue_number);
 
     match cli.command {
-        Some(command) => println!("The command is {:?}", command),
+        Some(command) => cmd_pullrequest(access_token, owner.as_str(), repo.as_str()),
         None => match issue_number {
             Some(issue_number) => {
                 cmd_work(access_token, owner.as_str(), repo.as_str(), &issue_number)
