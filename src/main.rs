@@ -90,7 +90,7 @@ fn main() -> io::Result<()> {
     debug!("The issue is {:?}", issue_number);
 
     match cli.command {
-        Some(command) => cmd_pullrequest(access_token, owner.as_str(), repo.as_str()),
+        Some(_command) => cmd_pullrequest(access_token, owner.as_str(), repo.as_str()),
         None => match issue_number {
             Some(issue_number) => {
                 cmd_work(access_token, owner.as_str(), repo.as_str(), &issue_number)
