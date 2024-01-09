@@ -55,15 +55,17 @@ fn cmd_pullrequest(access_token: String, owner: &str, repo: &str) {
 
     let issue = get_issue(access_token, owner, repo, &issue_number).expect("Could not get issue");
     let title = issue.title;
-    let body = format!("Closes # {}", issue_number_string);
+    let body = format!("Closes #{}", issue_number_string);
+    debug!("The title is {}", title);
+    debug!("The body is {}", body);
 
     let url = format!(
         "https://github.com/{}/{}/compare/{}?quick_pull=1&title={}&body={}",
         owner,
         repo,
         branch_name,
-        url_escape::encode_fragment(&title),
-        url_escape::encode_fragment(&body)
+        url_escape::encode_component(&title),
+        url_escape::encode_component(&body)
     );
 
     println!("Open new pull request with {}", url);
