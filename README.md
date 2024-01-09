@@ -5,7 +5,7 @@ An oppinionated Git(hub) workflow tool.
 ## Usage
 
 ```
-Usage: gi [<issue>]
+Usage: gi [<issue>] [<command>] [<args>]
 
 An oppinionated Git(hub) workflow tool.
 
@@ -14,6 +14,9 @@ Positional Arguments:
 
 Options:
   --help            display usage information
+
+Commands:
+  pr                Pull request command.
 ```
 
 ### Examples
