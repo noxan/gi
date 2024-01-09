@@ -16,7 +16,7 @@ Options:
   --help            display usage information
 
 Commands:
-  pr                Pull request command.
+  pr                Create pull request linked to issue of current branch.
 ```
 
 ### Examples

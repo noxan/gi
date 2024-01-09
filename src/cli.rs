@@ -17,6 +17,6 @@ pub enum CommandEnum {
 }
 
 #[derive(FromArgs, PartialEq, Debug)]
-/// Pull request command.
+/// Create pull request linked to issue of current branch.
 #[argh(subcommand, name = "pr")]
 pub struct CommandPullRequest {}
