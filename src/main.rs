@@ -41,6 +41,29 @@ fn cmd_work(access_token: String, owner: &str, repo: &str, issue_number: &u64) {
 
 fn cmd_pullrequest(access_token: String, owner: &str, repo: &str) {
     debug!("Pull request command for {}/{}", owner, repo);
+
+    let branch_name = git::git_current_branch().expect("Could not get current branch");
+    debug!("The branch name is {}", branch_name);
+
+    let issue_number_string = branch_name
+        .split('-')
+        .next()
+        .expect("Could not get issue number");
+    let issue_number = issue_number_string
+        .parse::<u64>()
+        .expect("Could not parse issue number");
+
+    let issue = get_issue(access_token, owner, repo, &issue_number).expect("Could not get issue");
+    let title = issue.title;
+    let body = format!("Closes #{}", issue_number_string);
+
+    let url = format!(
+        "https://github.com/{}/{}/compare/{}?expand=1&title={}&body={}",
+        owner, repo, branch_name, title, body
+    );
+
+    println!("Open new pull request with {}", url);
+    open::that(url).expect("Could not open browser");
 }
 
 fn main() -> io::Result<()> {
