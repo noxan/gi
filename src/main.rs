@@ -39,6 +39,39 @@ fn cmd_work(access_token: String, owner: &str, repo: &str, issue_number: &u64) {
     git::create_and_checkout_branch(&branch_name).expect("Could not create branch");
 }
 
+fn cmd_pullrequest(access_token: String, owner: &str, repo: &str) {
+    debug!("Pull request command for {}/{}", owner, repo);
+
+    let branch_name = git::git_current_branch().expect("Could not get current branch");
+    debug!("The branch name is {}", branch_name);
+
+    let issue_number_string = branch_name
+        .split('-')
+        .next()
+        .expect("Could not get issue number");
+    let issue_number = issue_number_string
+        .parse::<u64>()
+        .expect("Could not parse issue number");
+
+    let issue = get_issue(access_token, owner, repo, &issue_number).expect("Could not get issue");
+    let title = issue.title;
+    let body = format!("Closes #{}", issue_number_string);
+    debug!("The title is {}", title);
+    debug!("The body is {}", body);
+
+    let url = format!(
+        "https://github.com/{}/{}/compare/{}?quick_pull=1&title={}&body={}",
+        owner,
+        repo,
+        branch_name,
+        url_escape::encode_component(&title),
+        url_escape::encode_component(&body)
+    );
+
+    println!("Open new pull request with {}", url);
+    open::that(url).expect("Could not open browser");
+}
+
 fn main() -> io::Result<()> {
     env_logger::init();
 
@@ -54,12 +87,18 @@ fn main() -> io::Result<()> {
 
     // Parse command line arguments
     let cli: Cli = argh::from_env();
+    debug!("The cli is {:?}", cli);
     let issue_number = cli.issue;
     debug!("The issue is {:?}", issue_number);
 
-    match issue_number {
-        Some(issue_number) => cmd_work(access_token, owner.as_str(), repo.as_str(), &issue_number),
-        None => cmd_list(access_token, owner.as_str(), repo.as_str()),
+    match cli.command {
+        Some(_command) => cmd_pullrequest(access_token, owner.as_str(), repo.as_str()),
+        None => match issue_number {
+            Some(issue_number) => {
+                cmd_work(access_token, owner.as_str(), repo.as_str(), &issue_number)
+            }
+            None => cmd_list(access_token, owner.as_str(), repo.as_str()),
+        },
     }
 
     Ok(())

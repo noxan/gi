@@ -109,3 +109,13 @@ pub fn create_and_checkout_branch(branch_name: &str) -> Result<(), Box<dyn Error
 
     Ok(())
 }
+
+pub fn git_current_branch() -> Result<String, Box<dyn Error>> {
+    let repo_path = get_repo_path();
+
+    let repo = Repository::open(repo_path)?;
+    let head = repo.head()?;
+    let branch_name = head.shorthand().expect("Could not get current branch name");
+
+    Ok(branch_name.to_string())
+}
