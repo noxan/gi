@@ -12,6 +12,12 @@ pub struct Issue {
     pub id: u64,
     pub number: u64,
     pub title: String,
+    pub pull_request: Option<PullRequest>,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct PullRequest {
+    pub html_url: String,
 }
 
 fn request(
@@ -42,7 +48,12 @@ pub fn list_issues(
     let response = request(access_token, url)?;
     let issues = response.json::<Vec<Issue>>()?;
 
-    Ok(issues)
+    let filtered_issues = issues
+        .into_iter()
+        .filter(|issue| issue.pull_request.is_none())
+        .collect();
+
+    Ok(filtered_issues)
 }
 
 pub fn get_issue(
