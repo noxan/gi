@@ -60,12 +60,12 @@ fn main() -> io::Result<()> {
 
     match cli.command {
         Some(command) => println!("The command is {:?}", command),
-        None => println!("No command"),
-    }
-
-    match issue_number {
-        Some(issue_number) => cmd_work(access_token, owner.as_str(), repo.as_str(), &issue_number),
-        None => cmd_list(access_token, owner.as_str(), repo.as_str()),
+        None => match issue_number {
+            Some(issue_number) => {
+                cmd_work(access_token, owner.as_str(), repo.as_str(), &issue_number)
+            }
+            None => cmd_list(access_token, owner.as_str(), repo.as_str()),
+        },
     }
 
     Ok(())
