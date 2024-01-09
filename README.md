@@ -31,6 +31,11 @@ Options:
     ❯ gi 10
     Switched to branch '10-find-better-base-of-new-branches'
     ```
+3. Create a new pull request with `gi pr`
+    ```
+    ❯ gi pr
+    Open new pull request with https://github.com/noxan/gi/compare/10-find-better-base-of-new-branches?...
+    ```
 
 ## Configuration
 
