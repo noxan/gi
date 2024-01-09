@@ -106,7 +106,6 @@ pub fn create_and_checkout_branch(branch_name: &str) -> Result<(), Box<dyn Error
     let new_branch = repo.branch(branch_name, &target, false)?;
 
     repo.set_head(new_branch.get().name().unwrap())?;
-    repo.checkout_head(Some(git2::build::CheckoutBuilder::new().force()))?;
 
     Ok(())
 }
