@@ -57,10 +57,27 @@ fn main() -> io::Result<()> {
     let issue_number = cli.issue;
     debug!("The issue is {:?}", issue_number);
 
-    match issue_number {
-        Some(issue_number) => cmd_work(access_token, owner.as_str(), repo.as_str(), &issue_number),
-        None => cmd_list(access_token, owner.as_str(), repo.as_str()),
-    }
+    // match issue_number {
+    //     Some(issue_number) => cmd_work(access_token, owner.as_str(), repo.as_str(), &issue_number),
+    //     None => cmd_list(access_token, owner.as_str(), repo.as_str()),
+    // }
+
+    let repo = gix::discover(".").expect("Could not discover repo");
+    println!("The repo is {:?}", repo);
+
+    let remotes = repo.remote_names();
+    println!("The remotes are {:?}", remotes);
+
+    let default_remote = repo
+        .find_default_remote(gix::remote::Direction::Fetch)
+        .expect("Could not find default remote");
+    println!(
+        "The default remote is {:?}",
+        default_remote
+            .unwrap()
+            .url(gix::remote::Direction::Fetch)
+            .unwrap()
+    );
 
     Ok(())
 }
