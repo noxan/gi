@@ -1,6 +1,6 @@
 # gi
 
-An oppinionated Git(hub) productivity command line interface (CLI).
+An oppinionated Git(hub) workflow tool.
 
 ## Usage
 
