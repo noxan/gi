@@ -12,11 +12,11 @@ pub struct Cli {
 
 #[derive(FromArgs, PartialEq, Debug)]
 #[argh(subcommand)]
-enum CommandEnum {
+pub enum CommandEnum {
     PullRequest(CommandPullRequest),
 }
 
 #[derive(FromArgs, PartialEq, Debug)]
 /// Pull request command.
 #[argh(subcommand, name = "pr")]
-struct CommandPullRequest {}
+pub struct CommandPullRequest {}
