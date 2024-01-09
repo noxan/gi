@@ -38,7 +38,10 @@ pub fn list_issues(
     owner: &str,
     repo: &str,
 ) -> Result<Vec<Issue>, Box<dyn Error>> {
-    let url = format!("https://api.github.com/repos/{}/{}/issues", owner, repo);
+    let url = format!(
+        "https://api.github.com/repos/{}/{}/issues?filter=-is:pr",
+        owner, repo
+    );
     let response = request(access_token, url)?;
     let issues = response.json::<Vec<Issue>>()?;
 
