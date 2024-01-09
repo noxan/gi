@@ -5,4 +5,18 @@ use argh::FromArgs;
 pub struct Cli {
     #[argh(positional)]
     pub issue: Option<u64>,
+
+    #[argh(subcommand)]
+    pub command: Option<CommandEnum>,
 }
+
+#[derive(FromArgs, PartialEq, Debug)]
+#[argh(subcommand)]
+enum CommandEnum {
+    PullRequest(CommandPullRequest),
+}
+
+#[derive(FromArgs, PartialEq, Debug)]
+/// Pull request command.
+#[argh(subcommand, name = "pr")]
+struct CommandPullRequest {}

@@ -54,6 +54,7 @@ fn main() -> io::Result<()> {
 
     // Parse command line arguments
     let cli: Cli = argh::from_env();
+    println!("The cli is {:?}", cli);
     let issue_number = cli.issue;
     debug!("The issue is {:?}", issue_number);
 
