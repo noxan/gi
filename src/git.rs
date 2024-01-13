@@ -133,8 +133,10 @@ pub fn push_branch(branch_name: &str) -> Result<(), Box<dyn Error>> {
     let mut options = git2::PushOptions::new();
     options.remote_callbacks(callbacks);
 
+    debug!("Pushing branch {}", branch_ref);
     let mut origin = repo.find_remote("origin")?;
     origin.push(&[branch_ref], Some(&mut options)).unwrap();
+    debug!("Pushed branch {}", branch_ref);
 
     Ok(())
 }
