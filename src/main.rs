@@ -32,8 +32,9 @@ fn cmd_work(access_token: String, owner: &str, repo: &str, issue_number: &u64) {
     let title_slug = slugify(issue.title);
     let branch_full_name = format!("{}-{}", issue_number, title_slug);
 
-    // Limit branch name to 50 characters
-    let branch_name = branch_full_name.chars().take(50).collect::<String>();
+    // Limit branch name to 244 characters
+    // https://stackoverflow.com/questions/60045157/what-is-the-maximum-length-of-a-github-branch-name
+    let branch_name = branch_full_name.chars().take(244).collect::<String>();
     println!("The branch name is {}", branch_name);
 
     git::create_and_checkout_branch(&branch_name).expect("Could not create branch");
