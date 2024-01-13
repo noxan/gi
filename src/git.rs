@@ -1,5 +1,5 @@
 use configparser::ini::Ini;
-use git2::{BranchType, Repository};
+use git2::{BranchType, Cred, RemoteCallbacks, Repository};
 use log::debug;
 use std::error::Error;
 use std::{collections::HashMap, env, fs, io, path::PathBuf};
@@ -110,6 +110,34 @@ pub fn create_and_checkout_branch(branch_name: &str) -> Result<(), Box<dyn Error
     Ok(())
 }
 
+pub fn sync_branch(branch_name: &str) -> Result<(), Box<dyn Error>> {
+    push_branch(branch_name)?;
+
+    Ok(())
+}
+
+pub fn push_branch(branch_name: &str) -> Result<(), Box<dyn Error>> {
+    let repo_path = get_repo_path();
+
+    let repo = Repository::open(repo_path)?;
+
+    let branch = repo.find_branch(branch_name, BranchType::Local)?;
+    let branch_ref_name = branch.get().name().unwrap();
+
+    let mut callbacks = RemoteCallbacks::new();
+    callbacks.credentials(|_url, username_from_url, _allowed_types| {
+        Cred::ssh_key_from_agent(username_from_url.unwrap())
+    });
+
+    let mut options = git2::PushOptions::new();
+    options.remote_callbacks(callbacks);
+
+    let mut origin = repo.find_remote("origin")?;
+    origin.push(&[branch_ref_name], Some(&mut options)).unwrap();
+
+    Ok(())
+}
+
 pub fn git_current_branch() -> Result<String, Box<dyn Error>> {
     let repo_path = get_repo_path();
 
@@ -118,21 +146,4 @@ pub fn git_current_branch() -> Result<String, Box<dyn Error>> {
     let branch_name = head.shorthand().expect("Could not get current branch name");
 
     Ok(branch_name.to_string())
-}
-
-pub fn is_branch_up_to_date(branch_name: &str) -> Result<bool, Box<dyn Error>> {
-    let repo_path = get_repo_path();
-    let repo = Repository::open(repo_path)?;
-
-    let local_branch = repo.find_branch(branch_name, BranchType::Local)?;
-    let local_branch_commit = local_branch.get().peel_to_commit()?;
-
-    if let Some(remote_branch_name) = local_branch.upstream()?.name()? {
-        if let Ok(remote_branch) = repo.find_branch(&remote_branch_name, BranchType::Remote) {
-            let remote_branch_commit = remote_branch.get().peel_to_commit()?;
-            return Ok(local_branch_commit.id() == remote_branch_commit.id());
-        }
-    }
-
-    Ok(false)
 }

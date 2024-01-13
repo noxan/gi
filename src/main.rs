@@ -55,13 +55,7 @@ fn cmd_pullrequest(access_token: String, owner: &str, repo: &str) {
         .expect("Could not parse issue number");
 
     // Check if branch is synced on remote
-    let is_synced = git::is_branch_up_to_date(&branch_name)
-        .expect("Could not check if branch is synced on remote");
-
-    if !is_synced {
-        println!("The branch is not synced on remote");
-        return;
-    }
+    git::sync_branch(&branch_name).expect("Could not sync branch");
 
     // Prepare pull request
     let issue = get_issue(access_token, owner, repo, &issue_number).expect("Could not get issue");
