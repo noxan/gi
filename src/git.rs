@@ -119,3 +119,20 @@ pub fn git_current_branch() -> Result<String, Box<dyn Error>> {
 
     Ok(branch_name.to_string())
 }
+
+pub fn is_branch_up_to_date(branch_name: &str) -> Result<bool, Box<dyn Error>> {
+    let repo_path = get_repo_path();
+    let repo = Repository::open(repo_path)?;
+
+    let local_branch = repo.find_branch(branch_name, BranchType::Local)?;
+    let local_branch_commit = local_branch.get().peel_to_commit()?;
+
+    if let Some(remote_branch_name) = local_branch.upstream()?.name()? {
+        if let Ok(remote_branch) = repo.find_branch(&remote_branch_name, BranchType::Remote) {
+            let remote_branch_commit = remote_branch.get().peel_to_commit()?;
+            return Ok(local_branch_commit.id() == remote_branch_commit.id());
+        }
+    }
+
+    Ok(false)
+}
