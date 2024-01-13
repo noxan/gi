@@ -121,6 +121,10 @@ pub fn push_branch(branch_name: &str) -> Result<(), Box<dyn Error>> {
 
     let repo = Repository::open(repo_path)?;
 
+    let branch = repo.find_branch(branch_name, BranchType::Local)?;
+    let branch_ref = branch.get().name().unwrap();
+    debug!("The branch ref name is {}", branch_ref);
+
     let mut callbacks = RemoteCallbacks::new();
     callbacks.credentials(|_url, username_from_url, _allowed_types| {
         Cred::ssh_key_from_agent(username_from_url.unwrap())
@@ -130,7 +134,7 @@ pub fn push_branch(branch_name: &str) -> Result<(), Box<dyn Error>> {
     options.remote_callbacks(callbacks);
 
     let mut origin = repo.find_remote("origin")?;
-    origin.push(&[branch_name], Some(&mut options)).unwrap();
+    origin.push(&[branch_ref], Some(&mut options)).unwrap();
 
     Ok(())
 }
