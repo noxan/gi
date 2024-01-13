@@ -54,6 +54,10 @@ fn cmd_pullrequest(access_token: String, owner: &str, repo: &str) {
         .parse::<u64>()
         .expect("Could not parse issue number");
 
+    // Check if branch is synced on remote
+    git::sync_branch(&branch_name).expect("Could not sync branch");
+
+    // Prepare pull request
     let issue = get_issue(access_token, owner, repo, &issue_number).expect("Could not get issue");
     let title = issue.title;
     let body = format!("Closes #{}", issue_number_string);

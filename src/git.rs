@@ -1,5 +1,5 @@
 use configparser::ini::Ini;
-use git2::{BranchType, Repository};
+use git2::{BranchType, Cred, RemoteCallbacks, Repository};
 use log::debug;
 use std::error::Error;
 use std::{collections::HashMap, env, fs, io, path::PathBuf};
@@ -106,6 +106,37 @@ pub fn create_and_checkout_branch(branch_name: &str) -> Result<(), Box<dyn Error
     let new_branch = repo.branch(branch_name, &target, false)?;
 
     repo.set_head(new_branch.get().name().unwrap())?;
+
+    Ok(())
+}
+
+pub fn sync_branch(branch_name: &str) -> Result<(), Box<dyn Error>> {
+    push_branch(branch_name)?;
+
+    Ok(())
+}
+
+pub fn push_branch(branch_name: &str) -> Result<(), Box<dyn Error>> {
+    let repo_path = get_repo_path();
+
+    let repo = Repository::open(repo_path)?;
+
+    let branch = repo.find_branch(branch_name, BranchType::Local)?;
+    let branch_ref = branch.get().name().unwrap();
+    debug!("The branch ref name is {}", branch_ref);
+
+    let mut callbacks = RemoteCallbacks::new();
+    callbacks.credentials(|_url, username_from_url, _allowed_types| {
+        Cred::ssh_key_from_agent(username_from_url.unwrap())
+    });
+
+    let mut options = git2::PushOptions::new();
+    options.remote_callbacks(callbacks);
+
+    debug!("Pushing branch {}", branch_ref);
+    let mut origin = repo.find_remote("origin")?;
+    origin.push(&[branch_ref], Some(&mut options)).unwrap();
+    debug!("Pushed branch {}", branch_ref);
 
     Ok(())
 }
